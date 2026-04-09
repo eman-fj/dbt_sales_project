@@ -37,10 +37,9 @@ models/
   staging/
     stg_sales.sql
     stg_products.sql
-  intermediate/
-    int_sales_enriched.sql
   marts/
-    fct_customer_sales.sql
+    sales_enriched.sql
+    customer_sales.sql
 
 seeds/
   products.csv
@@ -53,16 +52,18 @@ seeds/
 ### Staging Layer
 
 * Cleans and standardizes raw data
-* Filters invalid records
+* Ensures consistent column naming and structure
 
-### Intermediate Layer
+### Transformation Layer
 
-* Joins sales and product data
-* Calculates total sales per order
+* sales_enriched joins sales data with product metadata
+* Calculates total sales using:
+    total_sales = quantity × price
 
 ### Mart Layer
 
-* Aggregates total sales per customer and product category
+* Customer_sales_summary aggregates total sales
+* Provides business ready insights per customer and product category
 
 ---
 
@@ -99,8 +100,38 @@ dbt docs generate
 dbt docs serve
 ```
 
+Following is the lineage graph for customer_sales_summary:
+
+![lineage graph](image-2.png)
 ---
 
+1. Data Sources (Inputs)
+
+- products (blue): comes from dbt seed (CSV file)
+- raw.sales_data (green): comes from Snowflake raw table
+
+These form the input layer of the pipeline.
+
+2. Staging Layer
+
+- staging_products: cleans and standardizes product data
+- staging_sales: cleans and standardizes sales data
+
+This layer ensures consistency before transformations.
+
+3. Transformation Layer
+
+- sales_enriched: joins sales and product data
+- Adds business meaning by combining datasets
+
+This is where raw data becomes analysis-ready.
+
+4. Mart Layer (Final Output)
+
+- customer_sales_summary: aggregates total sales
+- Answers the business question:
+      “How much did each customer spend per product category?”
+      
 ## Example Output from Snowflake
 
 ![Output from snowflake](image.png)
