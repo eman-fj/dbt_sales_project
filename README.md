@@ -26,6 +26,7 @@ The pipeline follows a modern data modeling approach with staging and mart layer
 ### 2. Product Data
 
 * Source: CSV file (`seeds/products.csv`)
+* Contains product metadata
 * Loaded using dbt seeds
 
 ---
@@ -48,7 +49,11 @@ seeds/
 
 ---
 
+This project follows a layered data modeling approach using dbt:
 
+```text
+Raw layer → Staging layer → Transformation layer → Mart layer
+```
 ---
 
 ## Transformations
@@ -68,7 +73,7 @@ seeds/
 ### Mart Layer
 
 * `customer_sales_summary` aggregates total sales
-* Provides business-ready insights per customer and product category
+* Provides business-ready insights by telling us total sales per customer per category
 
 ---
 
@@ -80,7 +85,7 @@ total_sales = quantity × price
 
 ## Running the Project
 
-Load seed data:
+To run the pipeline, load seed data:
 
 
 ```
@@ -99,7 +104,7 @@ Run tests:
 dbt test
 ```
 
-Generate docs:
+Generate docs and lineage:
 
 ```
 dbt docs generate
